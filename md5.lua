@@ -14,7 +14,7 @@ local function check_int(n)
   end
 end
 
-local function tbl_to_number(tbl)
+local function tbl2number(tbl)
   local n = #tbl
 
   local rslt = 0
@@ -56,7 +56,7 @@ local function bit_not(n)
       tbl[i] = 1
     end
   end
-  return tbl_to_number(tbl)
+  return tbl2number(tbl)
 end
 
 -- defined as local above
@@ -98,7 +98,7 @@ local function bit_or(m, n)
     end
   end
 
-  return tbl_to_number(tbl)
+  return tbl2number(tbl)
 end
 
 local function bit_and(m, n)
@@ -116,7 +116,7 @@ local function bit_and(m, n)
     end
   end
 
-  return tbl_to_number(tbl)
+  return tbl2number(tbl)
 end
 
 local function bit_xor(m, n)
@@ -134,7 +134,7 @@ local function bit_xor(m, n)
     end
   end
 
-  return tbl_to_number(tbl)
+  return tbl2number(tbl)
 end
 
 local function bit_rshift(n, bits)
@@ -169,13 +169,13 @@ local function bit_lshift(n, bits)
 end
 
 -- convert little-endian 32-bit int to a 4-char string
-local function lei_2_str(i)
+local function lei2str(i)
   local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
   return f(0)..f(8)..f(16)..f(24)
 end
 
 -- convert raw string to big-endian int
-local function str_2_bei(s)
+local function str2bei(s)
   local v=0
   for i=1, #s do
     v = v * 256 + byte(s, i)
@@ -184,7 +184,7 @@ local function str_2_bei(s)
 end
 
 -- convert raw string to little-endian int
-local function str_2_lei(s)
+local function str2lei(s)
   local v=0
   for i = #s,1,-1 do
     v = v*256 + byte(s, i)
@@ -197,18 +197,20 @@ local function cut_le_str(s,...)
   local o, r = 1, {}
   local args = {...}
   for i=1, #args do
-    table.insert(r, str_2_lei(sub(s, o, o + args[i] - 1)))
+    table.insert(r, str2lei(sub(s, o, o + args[i] - 1)))
     o = o + args[i]
   end
   return r
 end
 
-local swap = function (w) return str_2_bei(lei_2_str(w)) end
+local swap = function (w) return str2bei(lei2str(w)) end
 
-local function hex_to_binary(hex)
-  local result, _ = hex:gsub('..', function(hexval)
-    return string.char(tonumber(hexval, 16))
-  end)
+local function hex2binaryaux(hexval)
+    return char(tonumber(hexval, 16))
+end
+
+local function hex2binary(hex)
+  local result, _ = hex:gsub('..', hex2binaryaux)
   return result
 end
 
@@ -321,6 +323,8 @@ local function transform(A,B,C,D,X)
   return A+a,B+b,C+c,D+d
 end
 
+----------------------------------------------------------------
+
 local md5 = {}
 
 function md5.sumhexa(s)
@@ -331,8 +335,7 @@ function md5.sumhexa(s)
 
   if padLen == 0 then padLen = 64 end
 
-  s = s .. char(128) .. rep(char(0),padLen-1) ..
-      lei_2_str(8*msgLen) .. lei_2_str(0)
+  s = s .. char(128) .. rep(char(0),padLen-1) .. lei2str(8*msgLen) .. lei2str(0)
 
   assert(#s % 64 == 0)
 
@@ -350,7 +353,7 @@ function md5.sumhexa(s)
 end
 
 function md5.sum(s)
-  return hex_to_binary(md5.sumhexa(s))
+  return hex2binary(md5.sumhexa(s))
 end
 
 return md5
