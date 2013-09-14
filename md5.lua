@@ -1,6 +1,33 @@
--------------------------------------------------------------------------------
--- MD5 computation in Lua (5.1)
--------------------------------------------------------------------------------
+local md5 = {
+  _VERSION     = "md5.lua 0.5.0",
+  _DESCRIPTION = "MD5 computation in Lua (5.1)",
+  _URL         = "https://github.com/kikito/md5.lua",
+  _LICENSE     = [[
+    MIT LICENSE
+
+    Copyright (c) 2013 Enrique García Cota + Adam Baldwin + hanzao + Equi 4 Software
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  ]]
+}
+
 -- bit lib implementions
 
 local floor, abs, max = math.floor, math.abs, math.max
@@ -206,7 +233,7 @@ end
 local swap = function (w) return str2bei(lei2str(w)) end
 
 local function hex2binaryaux(hexval)
-    return char(tonumber(hexval, 16))
+  return char(tonumber(hexval, 16))
 end
 
 local function hex2binary(hex)
@@ -324,8 +351,6 @@ local function transform(A,B,C,D,X)
 end
 
 ----------------------------------------------------------------
-
-local md5 = {}
 
 function md5.sumhexa(s)
   local msgLen = #s
