@@ -10,7 +10,7 @@ Usage
 
     local md5 = require 'md5'
 
-    local md5_as_hex   = md5.sumhex(message)   -- returns a hex string
+    local md5_as_hex   = md5.sumhexa(message)   -- returns a hex string
     local md5_as_data  = md5.sum(message)     -- returns raw bytes
 
 Credits
