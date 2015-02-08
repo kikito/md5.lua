@@ -35,9 +35,10 @@ local char, byte, format, rep, sub =
   string.char, string.byte, string.format, string.rep, string.sub
 local bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift
 
-if require "bit" or require "bit32" then
-  local bit = require "bit" or require "bit32"
-  
+local ok, bit = pcall(require, 'bit')
+if not ok then ok, bit = pcall(require, 'bit32') end
+
+if ok then
   bit_or, bit_and, bit_not, bit_xor = bit.bor, bit.band, bit.bnot, bit.bxor
   bit_rshift, bit_lshift = bit.rshift, bit.lshift
 else
