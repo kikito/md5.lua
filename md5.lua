@@ -1,6 +1,6 @@
 local md5 = {
-  _VERSION     = "md5.lua 0.5.0",
-  _DESCRIPTION = "MD5 computation in Lua (5.1)",
+  _VERSION     = "md5.lua 1.0.0",
+  _DESCRIPTION = "MD5 computation in Lua (5.1-3, LuaJIT)",
   _URL         = "https://github.com/kikito/md5.lua",
   _LICENSE     = [[
     MIT LICENSE
@@ -48,20 +48,20 @@ else
       error("trying to use bitwise operation on non-integer!")
     end
   end
-  
+
   local function tbl2number(tbl)
     local n = #tbl
-  
+
     local rslt = 0
     local power = 1
     for i = 1, n do
       rslt = rslt + tbl[i]*power
       power = power*2
     end
-  
+
     return rslt
   end
-  
+
   local function expand(tbl_m, tbl_n)
     local big = {}
     local small = {}
@@ -76,11 +76,11 @@ else
     for i = #small + 1, #big do
       small[i] = 0
     end
-  
+
   end
-  
+
   local to_bits -- needs to be declared before bit_not
-  
+
   function bit_not(n)
     local tbl = to_bits(n)
     local size = max(#tbl, 32)
@@ -93,7 +93,7 @@ else
     end
     return tbl2number(tbl)
   end
-  
+
   -- defined as local above
   to_bits = function (n)
     check_int(n)
@@ -114,15 +114,15 @@ else
       n = (n-last)/2
       cnt = cnt + 1
     end
-  
+
     return tbl
   end
-  
+
   function bit_or(m, n)
     local tbl_m = to_bits(m)
     local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
-  
+
     local tbl = {}
     local rslt = max(#tbl_m, #tbl_n)
     for i = 1, rslt do
@@ -132,15 +132,15 @@ else
         tbl[i] = 1
       end
     end
-  
+
     return tbl2number(tbl)
   end
-  
+
   function bit_and(m, n)
     local tbl_m = to_bits(m)
     local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
-  
+
     local tbl = {}
     local rslt = max(#tbl_m, #tbl_n)
     for i = 1, rslt do
@@ -150,15 +150,15 @@ else
         tbl[i] = 1
       end
     end
-  
+
     return tbl2number(tbl)
   end
-  
+
   function bit_xor(m, n)
     local tbl_m = to_bits(m)
     local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
-  
+
     local tbl = {}
     local rslt = max(#tbl_m, #tbl_n)
     for i = 1, rslt do
@@ -168,35 +168,35 @@ else
         tbl[i] = 0
       end
     end
-  
+
     return tbl2number(tbl)
   end
-  
+
   function bit_rshift(n, bits)
     check_int(n)
-  
+
     local high_bit = 0
     if(n < 0) then
       -- negative
       n = bit_not(abs(n)) + 1
       high_bit = 2147483648 -- 0x80000000
     end
-  
+
     for i=1, bits do
       n = n/2
       n = bit_or(floor(n), high_bit)
     end
     return floor(n)
   end
-  
+
   function bit_lshift(n, bits)
     check_int(n)
-  
+
     if(n < 0) then
       -- negative
       n = bit_not(abs(n)) + 1
     end
-  
+
     for i=1, bits do
       n = n*2
     end
