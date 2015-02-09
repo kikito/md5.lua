@@ -21,6 +21,8 @@ This is a cleanup of an implementation by Adam Baldwin - https://gist.github.com
 Which in turn was a mix of the bitwise lib, http://luaforge.net/projects/bit/ by hanzhao (`abrash_han - at - hotmail.com`),
 and http://equi4.com/md5/md5calc.lua, by Equi 4 Software.
 
+Lua 5.2 and LuaJIT compatibility by [Positive07](https://github.com/kikito/md5.lua/pull/2)
+
 
 License
 =======
