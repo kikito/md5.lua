@@ -1,5 +1,5 @@
-md5.lua
-========
+md5.lua [![Build Status](https://travis-ci.org/kikito/md5.lua.svg)](https://travis-ci.org/kikito/md5.lua)
+=========================================================================================================
 
 This pure-Lua module computes md5 in Lua 5.1, Lua 5.2 and LuaJIT, using native bit-manipulation libraries when available, and falling back to table-based manipulation of integers in 5.1.
 
