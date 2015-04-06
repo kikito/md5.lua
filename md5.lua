@@ -129,7 +129,7 @@ else
   end
 
   bit_or = function(m, n)
-    return tbl2number(bits_or(tobits(m), tobits(n)))
+    return tbl2number(bits_or(to_bits(m), to_bits(n)))
   end
 
   bits_and = function(tbl_m, tbl_n)
@@ -148,7 +148,7 @@ else
   end
 
   bit_and = function(m, n)
-    return tbl2number(bits_and(tobits(m), tobits(n)))
+    return tbl2number(bits_and(to_bits(m), to_bits(n)))
   end
 
   bits_xor = function(tbl_m, tbl_n)
@@ -167,7 +167,7 @@ else
   end
 
   bit_xor = function(m, n)
-    return tbl2number(bits_xor(tobits(m), tobits(n)))
+    return tbl2number(bits_xor(to_bits(m), to_bits(n)))
   end
 
   bit_rshift = function(n, bits)
