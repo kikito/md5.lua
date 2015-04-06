@@ -30,7 +30,6 @@ local md5 = {
 
 -- bit lib implementions
 
-local floor, abs, max = math.floor, math.abs, math.max
 local char, byte, format, rep, sub =
   string.char, string.byte, string.format, string.rep, string.sub
 local bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift
@@ -80,7 +79,7 @@ else
 
   function bit_not(n)
     local tbl = to_bits(n)
-    local size = max(#tbl, 32)
+    local size = math.max(#tbl, 32)
     for i = 1, size do
       if(tbl[i] == 1) then
         tbl[i] = 0
@@ -95,7 +94,7 @@ else
   to_bits = function (n)
     if(n < 0) then
       -- negative
-      return to_bits(bit_not(abs(n)) + 1)
+      return to_bits(bit_not(math.abs(n)) + 1)
     end
     -- to bits table
     local tbl = {}
@@ -169,9 +168,11 @@ else
     local high_bit = 0
     if(n < 0) then
       -- negative
-      n = bit_not(abs(n)) + 1
+      n = bit_not(math.abs(n)) + 1
       high_bit = 2147483648 -- 0x80000000
     end
+
+    local floor = math.floor
 
     for i=1, bits do
       n = n/2
@@ -183,7 +184,7 @@ else
   function bit_lshift(n, bits)
     if(n < 0) then
       -- negative
-      n = bit_not(abs(n)) + 1
+      n = bit_not(math.abs(n)) + 1
     end
 
     for i=1, bits do
