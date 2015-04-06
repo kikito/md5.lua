@@ -36,7 +36,7 @@ local bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift
 
 local ok, bit = pcall(require, 'bit')
 if ok then
-  bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift = bit.bor, bit.band, bit.bnot, bit.xor, bit.rshift, bit.lshift
+  bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift = bit.bor, bit.band, bit.bnot, bit.bxor, bit.rshift, bit.lshift
 else
   ok, bit = pcall(require, 'bit32')
 
