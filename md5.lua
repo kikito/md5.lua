@@ -116,8 +116,7 @@ else
     expand(tbl_m, tbl_n)
 
     local tbl = {}
-    local rslt = max(#tbl_m, #tbl_n)
-    for i = 1, rslt do
+    for i = 1, #tbl_m do
       if(tbl_m[i]== 0 and tbl_n[i] == 0) then
         tbl[i] = 0
       else
@@ -134,8 +133,7 @@ else
     expand(tbl_m, tbl_n)
 
     local tbl = {}
-    local rslt = max(#tbl_m, #tbl_n)
-    for i = 1, rslt do
+    for i = 1, #tbl_m do
       if(tbl_m[i]== 0 or tbl_n[i] == 0) then
         tbl[i] = 0
       else
@@ -152,8 +150,7 @@ else
     expand(tbl_m, tbl_n)
 
     local tbl = {}
-    local rslt = max(#tbl_m, #tbl_n)
-    for i = 1, rslt do
+    for i = 1, #tbl_m do
       if(tbl_m[i] ~= tbl_n[i]) then
         tbl[i] = 1
       else
