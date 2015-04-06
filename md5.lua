@@ -68,15 +68,10 @@ else
     return rslt
   end
 
-  local function expand(tbl_m, tbl_n)
-    local big = {}
-    local small = {}
-    if(#tbl_m > #tbl_n) then
-      big = tbl_m
-      small = tbl_n
-    else
-      big = tbl_n
-      small = tbl_m
+  local function expand(t1, t2)
+    local big, small = t1, t2
+    if(#big < #small) then
+      big, small = small, big
     end
     -- expand small
     for i = #small + 1, #big do
