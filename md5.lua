@@ -77,7 +77,7 @@ else
 
   local to_bits -- needs to be declared before bit_not
 
-  function bit_not(n)
+  bit_not = function(n)
     local tbl = to_bits(n)
     local size = math.max(#tbl, 32)
     for i = 1, size do
@@ -110,7 +110,7 @@ else
     return tbl
   end
 
-  function bit_or(m, n)
+  bit_or = function(m, n)
     local tbl_m = to_bits(m)
     local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
@@ -127,7 +127,7 @@ else
     return tbl2number(tbl)
   end
 
-  function bit_and(m, n)
+  bit_and = function(m, n)
     local tbl_m = to_bits(m)
     local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
@@ -144,7 +144,7 @@ else
     return tbl2number(tbl)
   end
 
-  function bit_xor(m, n)
+  bit_xor = function(m, n)
     local tbl_m = to_bits(m)
     local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
@@ -161,7 +161,7 @@ else
     return tbl2number(tbl)
   end
 
-  function bit_rshift(n, bits)
+  bit_rshift = function(n, bits)
     local high_bit = 0
     if(n < 0) then
       -- negative
@@ -178,7 +178,7 @@ else
     return floor(n)
   end
 
-  function bit_lshift(n, bits)
+  bit_lshift = function(n, bits)
     if(n < 0) then
       -- negative
       n = bit_not(math.abs(n)) + 1
