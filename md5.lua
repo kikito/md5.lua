@@ -51,7 +51,7 @@ if ok then
   end
 
   bit_or, bit_and, bit_xor = normalize(bit.bor), normalize(bit.band), normalize(bit.bxor)
-  bit_rshift, bit_lshift = normailize(bit.rshift), normalize(bit.lshift)
+  bit_rshift, bit_lshift = normalize(bit.rshift), normalize(bit.lshift)
 
 else
   local function check_int(n)
