@@ -39,8 +39,20 @@ local ok, bit = pcall(require, 'bit')
 if not ok then ok, bit = pcall(require, 'bit32') end
 
 if ok then
-  bit_or, bit_and, bit_not, bit_xor = bit.bor, bit.band, bit.bnot, bit.bxor
-  bit_rshift, bit_lshift = bit.rshift, bit.lshift
+
+  bit_not = bit.bnot
+
+  local tobit = function(n)
+    return n <= 0x7fffffff and n or -(bit_not(n) + 1)
+  end
+
+  local normalize = function(f)
+    return function(a,b) return tobit(f(tobit(a), tobit(b))) end
+  end
+
+  bit_or, bit_and, bit_xor = normalize(bit.bor), normalize(bit.band), normalize(bit.bxor)
+  bit_rshift, bit_lshift = normailize(bit.rshift), normalize(bit.lshift)
+
 else
   local function check_int(n)
     -- checking not float
