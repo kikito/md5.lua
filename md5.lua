@@ -1,5 +1,5 @@
 local md5 = {
-  _VERSION     = "md5.lua 1.0.0",
+  _VERSION     = "md5.lua 1.0.1",
   _DESCRIPTION = "MD5 computation in Lua (5.1-3, LuaJIT)",
   _URL         = "https://github.com/kikito/md5.lua",
   _LICENSE     = [[
