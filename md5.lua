@@ -174,7 +174,7 @@ else
     local high_bit = 0
     if n < 0 then
       n = bit_not(math.abs(n)) + 1
-      high_bit = 0x80000000
+      high_bit = 2147483648 -- 0x80000000
     end
 
     local floor = math.floor
@@ -194,7 +194,7 @@ else
     for i=1, bits do
       n = n*2
     end
-    return bit_and(n, 0xffffffff)
+    return bit_and(n, 4294967295) -- 0xFFFFFFFF
   end
 end
 
@@ -247,6 +247,7 @@ end
 -- An MD5 mplementation in Lua, requires bitlib (hacked to use LuaBit from above, ugh)
 -- 10/02/2001 jcw@equi4.com
 
+local FF     = 0xffffffff
 local CONSTS = {
   0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
   0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
@@ -272,9 +273,9 @@ local g=function (x,y,z) return bit_or(bit_and(x,z),bit_and(y,-z-1)) end
 local h=function (x,y,z) return bit_xor(x,bit_xor(y,z)) end
 local i=function (x,y,z) return bit_xor(y,bit_or(x,-z-1)) end
 local z=function (f,a,b,c,d,x,s,ac)
-  a=bit_and(a+f(b,c,d)+x+ac,0xffffffff)
+  a=bit_and(a+f(b,c,d)+x+ac,FF)
   -- be *very* careful that left shift does not cause rounding!
-  return bit_or(bit_lshift(bit_and(a,bit_rshift(0xffffffff,s)),s),bit_rshift(a,32-s))+b
+  return bit_or(bit_lshift(bit_and(a,bit_rshift(FF,s)),s),bit_rshift(a,32-s))+b
 end
 
 local function transform(A,B,C,D,X)
