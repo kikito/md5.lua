@@ -56,16 +56,13 @@ if ok then
 else
 
   local function tbl2number(tbl)
-    local n = #tbl
-
-    local rslt = 0
+    local result = 0
     local power = 1
-    for i = 1, n do
-      rslt = rslt + tbl[i]*power
-      power = power*2
+    for i = 1, #tbl do
+      result = result + tbl[i] * power
+      power = power * 2
     end
-
-    return rslt
+    return result
   end
 
   local function expand(t1, t2)
