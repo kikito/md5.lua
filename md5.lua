@@ -54,12 +54,6 @@ if ok then
   bit_rshift, bit_lshift = normalize(bit.rshift), normalize(bit.lshift)
 
 else
-  local function check_int(n)
-    -- checking not float
-    if(n - floor(n) > 0) then
-      error("trying to use bitwise operation on non-integer!")
-    end
-  end
 
   local function tbl2number(tbl)
     local n = #tbl
@@ -88,7 +82,6 @@ else
     for i = #small + 1, #big do
       small[i] = 0
     end
-
   end
 
   local to_bits -- needs to be declared before bit_not
@@ -108,7 +101,6 @@ else
 
   -- defined as local above
   to_bits = function (n)
-    check_int(n)
     if(n < 0) then
       -- negative
       return to_bits(bit_not(abs(n)) + 1)
@@ -185,8 +177,6 @@ else
   end
 
   function bit_rshift(n, bits)
-    check_int(n)
-
     local high_bit = 0
     if(n < 0) then
       -- negative
@@ -202,8 +192,6 @@ else
   end
 
   function bit_lshift(n, bits)
-    check_int(n)
-
     if(n < 0) then
       -- negative
       n = bit_not(abs(n)) + 1
