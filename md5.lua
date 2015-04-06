@@ -75,27 +75,24 @@ else
     end
   end
 
-  local bits_not, bits_or, bits_and, bits_not, bits_xor
   local to_bits -- needs to be declared before bit_not
 
-  bits_not = function(tbl)
-    for i=1, math.max(#tbl, 32) do
-      if tbl[i] == 1 then
+  function bit_not(n)
+    local tbl = to_bits(n)
+    local size = math.max(#tbl, 32)
+    for i = 1, size do
+      if(tbl[i] == 1) then
         tbl[i] = 0
       else
         tbl[i] = 1
       end
     end
-    return tbl
-  end
-
-  bit_not = function(n)
-    return tbl2number(bits_not(to_bits(n)))
+    return tbl2number(tbl)
   end
 
   -- defined as local above
   to_bits = function (n)
-    if n < 0 then
+    if(n < 0) then
       -- negative
       return to_bits(bit_not(math.abs(n)) + 1)
     end
@@ -113,66 +110,61 @@ else
     return tbl
   end
 
-  bits_or = function(tbl_m, tbl_n)
+  function bit_or(m, n)
+    local tbl_m = to_bits(m)
+    local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
 
     local tbl = {}
     for i = 1, #tbl_m do
-      if(tbl_m[i] == 0 and tbl_n[i] == 0) then
+      if(tbl_m[i]== 0 and tbl_n[i] == 0) then
         tbl[i] = 0
       else
         tbl[i] = 1
       end
     end
 
-    return tbl
+    return tbl2number(tbl)
   end
 
-  bit_or = function(m, n)
-    return tbl2number(bits_or(tobits(m), tobits(n)))
-  end
-
-  bits_and = function(tbl_m, tbl_n)
+  function bit_and(m, n)
+    local tbl_m = to_bits(m)
+    local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
 
     local tbl = {}
     for i = 1, #tbl_m do
-      if tbl_m[i] == 0 or tbl_n[i] == 0 then
+      if(tbl_m[i]== 0 or tbl_n[i] == 0) then
         tbl[i] = 0
       else
         tbl[i] = 1
       end
     end
 
-    return tbl
+    return tbl2number(tbl)
   end
 
-  bit_and = function(m, n)
-    return tbl2number(bits_and(tobits(m), tobits(n)))
-  end
-
-  bits_xor = function(tbl_m, tbl_n)
+  function bit_xor(m, n)
+    local tbl_m = to_bits(m)
+    local tbl_n = to_bits(n)
     expand(tbl_m, tbl_n)
 
     local tbl = {}
     for i = 1, #tbl_m do
-      if tbl_m[i] ~= tbl_n[i] then
+      if(tbl_m[i] ~= tbl_n[i]) then
         tbl[i] = 1
       else
         tbl[i] = 0
       end
     end
 
-    return tbl
+    return tbl2number(tbl)
   end
 
-  bit_xor = function(m, n)
-    return tbl2number(bits_xor(tobits(m), tobits(n)))
-  end
-
-  bit_rshift = function(n, bits)
+  function bit_rshift(n, bits)
     local high_bit = 0
-    if n < 0 then
+    if(n < 0) then
+      -- negative
       n = bit_not(math.abs(n)) + 1
       high_bit = 2147483648 -- 0x80000000
     end
@@ -186,8 +178,9 @@ else
     return floor(n)
   end
 
-  bit_lshift = function(n, bits)
-    if n < 0 then
+  function bit_lshift(n, bits)
+    if(n < 0) then
+      -- negative
       n = bit_not(math.abs(n)) + 1
     end
 
