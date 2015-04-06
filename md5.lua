@@ -193,21 +193,21 @@ else
       return bit_and(n, 0xFFFFFFFF)
     end
   end
+end
 
-  -- convert little-endian 32-bit int to a 4-char string
-  local function lei2str(i)
-    local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
-    return f(0)..f(8)..f(16)..f(24)
-  end
+-- convert little-endian 32-bit int to a 4-char string
+local function lei2str(i)
+  local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
+  return f(0)..f(8)..f(16)..f(24)
+end
 
-  -- convert raw string to big-endian int
-  local function str2bei(s)
-    local v=0
-    for i=1, #s do
-      v = v * 256 + byte(s, i)
-    end
-    return v
+-- convert raw string to big-endian int
+local function str2bei(s)
+  local v=0
+  for i=1, #s do
+    v = v * 256 + byte(s, i)
   end
+  return v
 end
 
 -- convert raw string to little-endian int
