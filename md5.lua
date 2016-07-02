@@ -346,7 +346,8 @@ local function transform(A,B,C,D,X)
   c=z(i,c,d,a,b,X[ 2],15,t[63])
   b=z(i,b,c,d,a,X[ 9],21,t[64])
 
-  return A+a,B+b,C+c,D+d
+  return bit_and(A+a,0xFFFFFFFF),bit_and(B+b,0xFFFFFFFF),
+         bit_and(C+c,0xFFFFFFFF),bit_and(D+d,0xFFFFFFFF)
 end
 
 ----------------------------------------------------------------
