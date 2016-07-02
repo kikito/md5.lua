@@ -268,8 +268,8 @@ local f=function (x,y,z) return bit_or(bit_and(x,y),bit_and(-x-1,z)) end
 local g=function (x,y,z) return bit_or(bit_and(x,z),bit_and(y,-z-1)) end
 local h=function (x,y,z) return bit_xor(x,bit_xor(y,z)) end
 local i=function (x,y,z) return bit_xor(y,bit_or(x,-z-1)) end
-local z=function (f,a,b,c,d,x,s,ac)
-  a=bit_and(a+f(b,c,d)+x+ac,0xFFFFFFFF)
+local z=function (ff,a,b,c,d,x,s,ac)
+  a=bit_and(a+ff(b,c,d)+x+ac,0xFFFFFFFF)
   -- be *very* careful that left shift does not cause rounding!
   return bit_or(bit_lshift(bit_and(a,bit_rshift(0xFFFFFFFF,s)),s),bit_rshift(a,32-s))+b
 end
@@ -366,8 +366,8 @@ function md5.sumhexa(s)
   local t = CONSTS
   local a,b,c,d = t[65],t[66],t[67],t[68]
 
-  for i=1,#s,64 do
-    local X = cut_le_str(sub(s,i,i+63),4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
+  for ii=1,#s,64 do
+    local X = cut_le_str(sub(s,ii,ii+63),4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
     assert(#X == 16)
     X[0] = table.remove(X,1) -- zero based!
     a,b,c,d = transform(a,b,c,d,X)
