@@ -232,15 +232,6 @@ end
 
 local swap = function (w) return str2bei(lei2str(w)) end
 
-local function hex2binaryaux(hexval)
-  return char(tonumber(hexval, 16))
-end
-
-local function hex2binary(hex)
-  local result, _ = hex:gsub('..', hex2binaryaux)
-  return result
-end
-
 -- An MD5 mplementation in Lua, requires bitlib (hacked to use LuaBit from above, ugh)
 -- 10/02/2001 jcw@equi4.com
 
@@ -352,33 +343,53 @@ end
 
 ----------------------------------------------------------------
 
-function md5.sumhexa(s)
-  local msgLen = #s
+local function md5_update(self, s)
+  self.pos = self.pos + #s
+  s = self.buf .. s
+  for ii = 1, #s - 63, 64 do
+    local X = cut_le_str(sub(s,ii,ii+63),4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
+    assert(#X == 16)
+    X[0] = table.remove(X,1) -- zero based!
+    self.a,self.b,self.c,self.d = transform(self.a,self.b,self.c,self.d,X)
+  end
+  self.buf = sub(s, math.floor(#s/64)*64 + 1, #s)
+end
+
+local function md5_finish(self)
+  local msgLen = self.pos
   local padLen = 56 - msgLen % 64
 
   if msgLen % 64 > 56 then padLen = padLen + 64 end
 
   if padLen == 0 then padLen = 64 end
 
-  s = s .. char(128) .. rep(char(0),padLen-1) .. lei2str(8*msgLen) .. lei2str(0)
+  local s = char(128) .. rep(char(0),padLen-1) .. lei2str(bit_and(8*msgLen, 0xFFFFFFFF)) .. lei2str(math.floor(msgLen/0x20000000))
+  md5_update(self, s)
 
-  assert(#s % 64 == 0)
+  assert(self.pos % 64 == 0)
+  return lei2str(self.a) .. lei2str(self.b) .. lei2str(self.c) .. lei2str(self.d)
+end
 
-  local t = CONSTS
-  local a,b,c,d = t[65],t[66],t[67],t[68]
+function md5.new()
+  return { a = CONSTS[65], b = CONSTS[66], c = CONSTS[67], d = CONSTS[68],
+           pos = 0,
+           buf = '',
+           update = md5_update,
+           finish = md5_finish }
+end
 
-  for ii=1,#s,64 do
-    local X = cut_le_str(sub(s,ii,ii+63),4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
-    assert(#X == 16)
-    X[0] = table.remove(X,1) -- zero based!
-    a,b,c,d = transform(a,b,c,d,X)
-  end
-
-  return format("%08x%08x%08x%08x",swap(a),swap(b),swap(c),swap(d))
+function md5.tohex(s)
+  return format("%08x%08x%08x%08x", str2bei(sub(s, 1, 4)), str2bei(sub(s, 5, 8)), str2bei(sub(s, 9, 12)), str2bei(sub(s, 13, 16)))
 end
 
 function md5.sum(s)
-  return hex2binary(md5.sumhexa(s))
+  local state = md5.new()
+  state:update(s)
+  return state:finish()
+end
+
+function md5.sumhexa(s)
+  return md5.tohex(md5.sum(s))
 end
 
 return md5
