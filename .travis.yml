@@ -14,7 +14,7 @@ before_install:
   - export PATH=$PATH:$PWD/lua_install/bin # Add directory with all installed binaries to PATH
 
 install:
-  - luarocks install luacheck
+  - luarocks install luacheck --deps-mode=none
   - luarocks install busted
   - luarocks install luacov
   - luarocks install luacov-coveralls
