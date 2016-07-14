@@ -8,10 +8,21 @@ It implements md5.sum and md5.sumhex like the [kernel project md5 package](http:
 Usage
 =====
 
+Simple example:
+
     local md5 = require 'md5'
 
+    local md5_as_data  = md5.sum(message)       -- returns raw bytes
     local md5_as_hex   = md5.sumhexa(message)   -- returns a hex string
-    local md5_as_data  = md5.sum(message)     -- returns raw bytes
+    local md5_as_hex2  = md5.tohex(md5_as_data) -- returns the same string as md5_as_hex
+
+Incremental example (for computing md5 of streams, or big files which have to be loaded in chunks - new since 1.1.0):
+
+    local m = md5.new()
+    m:update('some bytes')
+    m:update('some more bytes')
+    m:update('etc')
+    return md5.tohex(m:finish())
 
 Credits
 =======
@@ -22,6 +33,8 @@ Which in turn was a mix of the bitwise lib, http://luaforge.net/projects/bit/ by
 and http://equi4.com/md5/md5calc.lua, by Equi 4 Software.
 
 Lua 5.2 and LuaJIT compatibility by [Positive07](https://github.com/kikito/md5.lua/pull/2)
+
+A very important fix and the incremental variant by [pgimeno](https://github.com/kikito/md5.lua/pull/10)
 
 
 License
