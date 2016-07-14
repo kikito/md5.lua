@@ -353,6 +353,7 @@ local function md5_update(self, s)
     self.a,self.b,self.c,self.d = transform(self.a,self.b,self.c,self.d,X)
   end
   self.buf = sub(s, math.floor(#s/64)*64 + 1, #s)
+  return self
 end
 
 local function md5_finish(self)
@@ -370,6 +371,8 @@ local function md5_finish(self)
   return lei2str(self.a) .. lei2str(self.b) .. lei2str(self.c) .. lei2str(self.d)
 end
 
+----------------------------------------------------------------
+
 function md5.new()
   return { a = CONSTS[65], b = CONSTS[66], c = CONSTS[67], d = CONSTS[68],
            pos = 0,
@@ -383,9 +386,7 @@ function md5.tohex(s)
 end
 
 function md5.sum(s)
-  local state = md5.new()
-  state:update(s)
-  return state:finish()
+  return md5.new():update(s):finish()
 end
 
 function md5.sumhexa(s)
