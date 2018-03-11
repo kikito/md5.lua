@@ -49,6 +49,13 @@ The specs for this library are implemented with [busted](http://ovinelabs.com/bu
 
     cd path/to/where/the/spec/folder/is
     busted
+    
+Install
+=======
+
+Either copy the file or using luarocks:
+
+    luarocks install --server=http://luarocks.org/manifests/kikito md5
 
 
 
