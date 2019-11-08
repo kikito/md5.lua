@@ -3,7 +3,7 @@ md5.lua [![Build Status](https://travis-ci.org/kikito/md5.lua.svg)](https://trav
 
 This pure-Lua module computes md5 in Lua 5.1, Lua 5.2 and LuaJIT, using native bit-manipulation libraries when available, and falling back to table-based manipulation of integers in 5.1.
 
-It implements md5.sum and md5.sumhex like the [kernel project md5 package](http://www.keplerproject.org/md5/), but it's done completely in Lua, with no dependencies on other libs or C files.
+It implements md5.sum and md5.sumhex like the [kepler project md5 package](http://keplerproject.github.com/md5/), but it's done completely in Lua, with no dependencies on other libs or C files.
 
 Usage
 =====
