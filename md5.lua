@@ -198,7 +198,7 @@ end
 
 -- convert little-endian 32-bit int to a 4-char string
 local lei2str
--- function is defined this way to unlock full jit compilation
+-- function is defined this way to allow full jit compilation (removing UCLO instruction in LuaJIT)
 if ok_ffi then
   lei2str = function(i) return ffi.string(ffi.new("int[1]", i), 4) end
 else
@@ -240,12 +240,24 @@ end
 
 -- cut up a string in little-endian ints of given size
 local function cut_le_str(s)
-  local o, r = 1, {}
-  for i=1, 16 do
-    table.insert(r, str2lei(sub(s, o, o + 4 - 1)))
-    o = o + 4
-  end
-  return r
+  return {
+    str2lei(sub(s, 1, 4)),
+    str2lei(sub(s, 5, 8)),
+    str2lei(sub(s, 9, 12)),
+    str2lei(sub(s, 13, 16)),
+    str2lei(sub(s, 17, 20)),
+    str2lei(sub(s, 21, 24)),
+    str2lei(sub(s, 25, 28)),
+    str2lei(sub(s, 29, 32)),
+    str2lei(sub(s, 33, 36)),
+    str2lei(sub(s, 37, 40)),
+    str2lei(sub(s, 41, 44)),
+    str2lei(sub(s, 45, 48)),
+    str2lei(sub(s, 49, 52)),
+    str2lei(sub(s, 53, 56)),
+    str2lei(sub(s, 57, 60)),
+    str2lei(sub(s, 61, 64)),
+  }
 end
 
 local swap = function (w) return str2bei(lei2str(w)) end
