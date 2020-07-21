@@ -197,11 +197,18 @@ else
 end
 
 -- convert little-endian 32-bit int to a 4-char string
-local function lei2str(i)
-  if ok_ffi then return ffi.string(ffi.new("int[1]", i), 4) end
-  local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
-  return f(0)..f(8)..f(16)..f(24)
+local lei2str
+-- function is defined this way to unlock full jit compilation
+if ok_ffi then
+  lei2str = function(i) return ffi.string(ffi.new("int[1]", i), 4) end
+else
+  lei2str = function (i)
+    local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
+    return f(0)..f(8)..f(16)..f(24)
+  end
 end
+
+
 
 -- convert raw string to big-endian int
 local function str2bei(s)
@@ -213,22 +220,30 @@ local function str2bei(s)
 end
 
 -- convert raw string to little-endian int
-local function str2lei(s)
-  if ok_ffi then return ffi.cast("int*", ffi.new("char[4]", s))[0] end
-  local v=0
-  for i = #s,1,-1 do
-    v = v*256 + byte(s, i)
+local str2lei
+
+if ok_ffi then
+  str2lei = function(s)
+    local int = ffi.new("const char*", s)
+    return ffi.cast("const int*", int)[0]
   end
-  return v
+else
+  str2lei = function(s)
+    local v=0
+    for i = #s,1,-1 do
+      v = v*256 + byte(s, i)
+    end
+    return v
+    end
 end
 
+
 -- cut up a string in little-endian ints of given size
-local function cut_le_str(s,...)
+local function cut_le_str(s)
   local o, r = 1, {}
-  local args = {...}
-  for i=1, #args do
-    table.insert(r, str2lei(sub(s, o, o + args[i] - 1)))
-    o = o + args[i]
+  for i=1, 16 do
+    table.insert(r, str2lei(sub(s, o, o + 4 - 1)))
+    o = o + 4
   end
   return r
 end
@@ -350,7 +365,7 @@ local function md5_update(self, s)
   self.pos = self.pos + #s
   s = self.buf .. s
   for ii = 1, #s - 63, 64 do
-    local X = cut_le_str(sub(s,ii,ii+63),4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
+    local X = cut_le_str(sub(s,ii,ii+63))
     assert(#X == 16)
     X[0] = table.remove(X,1) -- zero based!
     self.a,self.b,self.c,self.d = transform(self.a,self.b,self.c,self.d,X)
