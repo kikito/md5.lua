@@ -200,7 +200,8 @@ end
 local lei2str
 -- function is defined this way to allow full jit compilation (removing UCLO instruction in LuaJIT)
 if ok_ffi then
-  lei2str = function(i) return ffi.string(ffi.new("int[1]", i), 4) end
+  local ct_IntType = ffi.typeof("int[1]")
+  lei2str = function(i) return ffi.string(ct_IntType(i), 4) end
 else
   lei2str = function (i)
     local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
@@ -223,9 +224,11 @@ end
 local str2lei
 
 if ok_ffi then
+  local ct_constcharptr = ffi.typeof("const char*")
+  local ct_constintptr = ffi.typeof("const int*")
   str2lei = function(s)
-    local int = ffi.new("const char*", s)
-    return ffi.cast("const int*", int)[0]
+    local int = ct_constcharptr(s)
+    return ffi.cast(ct_constintptr, int)[0]
   end
 else
   str2lei = function(s)
