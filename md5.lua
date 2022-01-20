@@ -35,6 +35,7 @@ local char, byte, format, rep, sub =
 local bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift
 
 local ok, bit = pcall(require, 'bit')
+local ok_ffi, ffi = pcall(require, 'ffi')
 if ok then
   bit_or, bit_and, bit_not, bit_xor, bit_rshift, bit_lshift = bit.bor, bit.band, bit.bnot, bit.bxor, bit.rshift, bit.lshift
 else
@@ -196,10 +197,19 @@ else
 end
 
 -- convert little-endian 32-bit int to a 4-char string
-local function lei2str(i)
-  local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
-  return f(0)..f(8)..f(16)..f(24)
+local lei2str
+-- function is defined this way to allow full jit compilation (removing UCLO instruction in LuaJIT)
+if ok_ffi then
+  local ct_IntType = ffi.typeof("int[1]")
+  lei2str = function(i) return ffi.string(ct_IntType(i), 4) end
+else
+  lei2str = function (i)
+    local f=function (s) return char( bit_and( bit_rshift(i, s), 255)) end
+    return f(0)..f(8)..f(16)..f(24)
+  end
 end
+
+
 
 -- convert raw string to big-endian int
 local function str2bei(s)
@@ -211,26 +221,47 @@ local function str2bei(s)
 end
 
 -- convert raw string to little-endian int
-local function str2lei(s)
-  local v=0
-  for i = #s,1,-1 do
-    v = v*256 + byte(s, i)
+local str2lei
+
+if ok_ffi then
+  local ct_constcharptr = ffi.typeof("const char*")
+  local ct_constintptr = ffi.typeof("const int*")
+  str2lei = function(s)
+    local int = ct_constcharptr(s)
+    return ffi.cast(ct_constintptr, int)[0]
   end
-  return v
+else
+  str2lei = function(s)
+    local v=0
+    for i = #s,1,-1 do
+      v = v*256 + byte(s, i)
+    end
+    return v
+    end
 end
+
 
 -- cut up a string in little-endian ints of given size
-local function cut_le_str(s,...)
-  local o, r = 1, {}
-  local args = {...}
-  for i=1, #args do
-    table.insert(r, str2lei(sub(s, o, o + args[i] - 1)))
-    o = o + args[i]
-  end
-  return r
+local function cut_le_str(s)
+  return {
+    str2lei(sub(s, 1, 4)),
+    str2lei(sub(s, 5, 8)),
+    str2lei(sub(s, 9, 12)),
+    str2lei(sub(s, 13, 16)),
+    str2lei(sub(s, 17, 20)),
+    str2lei(sub(s, 21, 24)),
+    str2lei(sub(s, 25, 28)),
+    str2lei(sub(s, 29, 32)),
+    str2lei(sub(s, 33, 36)),
+    str2lei(sub(s, 37, 40)),
+    str2lei(sub(s, 41, 44)),
+    str2lei(sub(s, 45, 48)),
+    str2lei(sub(s, 49, 52)),
+    str2lei(sub(s, 53, 56)),
+    str2lei(sub(s, 57, 60)),
+    str2lei(sub(s, 61, 64)),
+  }
 end
-
-local swap = function (w) return str2bei(lei2str(w)) end
 
 -- An MD5 mplementation in Lua, requires bitlib (hacked to use LuaBit from above, ugh)
 -- 10/02/2001 jcw@equi4.com
@@ -347,7 +378,7 @@ local function md5_update(self, s)
   self.pos = self.pos + #s
   s = self.buf .. s
   for ii = 1, #s - 63, 64 do
-    local X = cut_le_str(sub(s,ii,ii+63),4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
+    local X = cut_le_str(sub(s,ii,ii+63))
     assert(#X == 16)
     X[0] = table.remove(X,1) -- zero based!
     self.a,self.b,self.c,self.d = transform(self.a,self.b,self.c,self.d,X)
