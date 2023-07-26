@@ -413,7 +413,7 @@ function md5.new()
 end
 
 function md5.tohex(s)
-  return format("%08x%08x%08x%08x", str2bei(sub(s, 1, 4)), str2bei(sub(s, 5, 8)), str2bei(sub(s, 9, 12)), str2bei(sub(s, 13, 16)))
+  return format("%04x%04x%04x%04x%04x%04x%04x%04x", str2bei(sub(s, 1, 2)), str2bei(sub(s, 3, 4)), str2bei(sub(s, 5, 6)), str2bei(sub(s, 7, 8)), str2bei(sub(s, 9, 10)), str2bei(sub(s, 11, 12)), str2bei(sub(s, 13, 14)), str2bei(sub(s, 15, 16)))
 end
 
 function md5.sum(s)
